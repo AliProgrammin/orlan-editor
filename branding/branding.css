@@ -1,0 +1,24 @@
+/* Orlan Editor branding. The server links this file into every editor page. */
+
+/* The About dialog: the Orlan mark in place of the product logo, and no engine logo. */
+#product-logo {
+	background-image: url('orlan-mark.svg');
+	background-size: 64px;
+	min-height: 64px;
+}
+#integrator-logo,
+#lokit-logo {
+	display: none;
+}
+
+/* The File view header: the Orlan name and mark. */
+.backstage-header-title {
+	font-size: 0;
+}
+.backstage-header-title::before {
+	background-image: url('orlan-mark-white.svg');
+}
+.backstage-header-title::after {
+	content: 'Orlan Editor';
+	font-size: var(--medium-font-size);
+}
