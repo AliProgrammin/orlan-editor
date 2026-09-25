@@ -19,6 +19,13 @@ run (`gh workflow run build.yml`). A build takes about 20 minutes.
   `--with-max-connections=100000 --with-max-documents=100000`.
 - `branding/` goes into `/usr/share/coolwsd/browser/dist/`. The server links `branding.css` and
   `branding.js` into each editor page.
+- `build.sh` applies `patches/*.patch` to online after the clone. The patch keeps the upstream
+  copyright notices in the About box, names Collabora Online as the MPL-2.0 source, and removes
+  the Forum, Report an issue and other links to Collabora sites. The build stops if the patch
+  does not apply to the current `main`.
+- `start-orlan-editor.sh` sets `logging.disable_server_audit=true` (no Server audit entry, whose
+  dialog links to Collabora documentation) and `fetch_update_check=0` (no update notice that
+  names Collabora Online).
 
 ## Connection and document limits
 

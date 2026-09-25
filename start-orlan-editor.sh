@@ -41,8 +41,11 @@ if [ "$user_id" -ne 1001 ]; then
   export LD_PRELOAD=libnss_wrapper.so
 fi
 
-# Start coolwsd, with the Orlan name, link and logo in the editor.
+# Start coolwsd, with the Orlan name, link and logo in the editor. No server audit entry in the
+# Help tab (its dialog links to Collabora documentation), and no version check against
+# Collabora (its notice names Collabora Online).
 exec /usr/bin/coolwsd --version --use-env-vars ${cert_params} \
  "--o:user_interface.brandProductName=Orlan Editor" \
  "--o:user_interface.brandProductURL=https://orlan.app" \
+ --o:logging.disable_server_audit=true --o:fetch_update_check=0 \
  --o:user_interface.logoURL=none --o:sys_template_path=/opt/cool/systemplate --o:child_root_path=/opt/cool/child-roots --o:file_server_root_path=/usr/share/coolwsd --o:cache_files.path=/opt/cool/cache --o:logging.color=false --o:stop_on_config_change=true ${extra_params} "$@"

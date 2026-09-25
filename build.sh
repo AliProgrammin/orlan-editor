@@ -48,6 +48,10 @@ fi
 
 ( cd online && git fetch --all && git checkout -f $COLLABORA_ONLINE_BRANCH && git clean -f -d && git pull -r ) || exit 1
 
+# Orlan Editor: the About box credits Collabora Online, and the editor has no links to
+# Collabora sites (see the header of the patch). The build stops if the patch does not apply.
+( cd online && git apply --verbose "$SRCDIR"/patches/*.patch ) || exit 1
+
 ##### engine #####
 
 engine_dir="$BUILDDIR/online/engine"

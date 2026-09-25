@@ -1,0 +1,156 @@
+Orlan Editor patch to the Collabora Online browser code. build.sh applies it after the
+clone, and the build stops if it does not apply.
+
+- About box: names Collabora Online as the MPL-2.0 source, keeps the upstream copyright
+  notices, and links to the source of this build.
+- Help tab and Help menu: no Forum and no Report an issue entries, which open Collabora sites.
+- Calc formula error menu: no "Help on this error" entry, which opens a Collabora site.
+- Proxy error message: no link to the Collabora SDK documentation.
+
+diff --git a/browser/src/canvas/sections/FormulaErrorHelpSection.ts b/browser/src/canvas/sections/FormulaErrorHelpSection.ts
+index e3058f72c..ea2db2b81 100644
+--- a/browser/src/canvas/sections/FormulaErrorHelpSection.ts
++++ b/browser/src/canvas/sections/FormulaErrorHelpSection.ts
+@@ -76,11 +76,6 @@ class FormulaErrorHelpSection extends HTMLObjectSection {
+ 		sep.className = 'formula-error-menu-separator';
+ 		menu.appendChild(sep);
+ 
+-		// Help on this error
+-		this.addMenuItem(menu, _('Help on this error'), () => {
+-			window.open('https://help.collaboraoffice.com/', '_blank', 'noopener');
+-		});
+-
+ 		// Inspect with Function Wizard
+ 		this.addMenuItem(menu, _('Inspect with Function Wizard'), () => {
+ 			app.map.sendUnoCommand('.uno:FunctionDialog');
+diff --git a/browser/src/control/Control.AboutDialog.ts b/browser/src/control/Control.AboutDialog.ts
+index 94f6b3e9d..c4bb042c5 100644
+--- a/browser/src/control/Control.AboutDialog.ts
++++ b/browser/src/control/Control.AboutDialog.ts
+@@ -201,13 +201,22 @@ class AboutDialog {
+ 			elements.licenseInfo.appendChild(licenseLink);
+ 		}
+ 
+-		// Copyright and vendor
++		// Orlan Editor: name the MPL-2.0 source and keep its copyright notices.
+ 		const span = document.createElement('span');
+ 		span.setAttribute('dir', 'ltr');
+-		span.textContent = _(
+-			`Copyright © ${window.copyrightYear}, ${window.vendor}.`,
+-		);
++		span.textContent =
++			`${productName} is built from the source code of Collabora Online, ` +
++			'licensed under the Mozilla Public License 2.0. ' +
++			'Copyright the Collabora Online contributors. ' +
++			'Copyright Collabora Productivity Limited.';
+ 		elements.copyright.appendChild(span);
++		elements.copyright.appendChild(document.createElement('br'));
++		this.appendSpanAndLink(
++			elements.copyright,
++			'Source code:\xA0',
++			'https://github.com/AliProgrammin/orlan-editor',
++			'github.com/AliProgrammin/orlan-editor',
++		);
+ 
+ 		if (window.socketProxy) {
+ 			elements.slowProxy.innerText = _('"Slow Proxy"');
+diff --git a/browser/src/control/Control.Menubar.ts b/browser/src/control/Control.Menubar.ts
+index 2408da4f1..5ba945b3f 100644
+--- a/browser/src/control/Control.Menubar.ts
++++ b/browser/src/control/Control.Menubar.ts
+@@ -453,8 +453,6 @@ class Menubar extends window.L.Control {
+ 				{type: 'separator', iosapp: false},
+ 				{name: _('Keyboard shortcuts'), id: 'keyboard-shortcuts', type: 'action', iosapp: false},
+ 				{type: 'separator'},
+-				{name: _('Forum'), id: 'forum', type: 'action'},
+-				{name: _('Report an issue'), id: 'report-an-issue', type: 'action', iosapp: false},
+ 				{name: _('Latest Updates'), id: 'latestupdates', type: 'action', iosapp: false},
+ 				{name: _('Send Feedback'), id: 'feedback', type: 'action', mobileapp: false},
+ 				{type: 'separator'},
+@@ -665,8 +663,6 @@ class Menubar extends window.L.Control {
+ 				{type: 'separator', iosapp: false},
+ 				{name: _('Keyboard shortcuts'), id: 'keyboard-shortcuts', type: 'action', iosapp: false},
+ 				{type: 'separator'},
+-				{name: _('Forum'), id: 'forum', type: 'action'},
+-				{name: _('Report an issue'), id: 'report-an-issue', type: 'action', iosapp: false},
+ 				{name: _('Latest Updates'), id: 'latestupdates', type: 'action', iosapp: false},
+ 				{name: _('Send Feedback'), id: 'feedback', type: 'action', mobileapp: false},
+ 				{type: 'separator'},
+@@ -832,8 +828,6 @@ class Menubar extends window.L.Control {
+ 				{type: 'separator', iosapp: false},
+ 				{name: _('Keyboard shortcuts'), id: 'keyboard-shortcuts', type: 'action', iosapp: false},
+ 				{type: 'separator'},
+-				{name: _('Forum'), id: 'forum', type: 'action'},
+-				{name: _('Report an issue'), id: 'report-an-issue', type: 'action', iosapp: false},
+ 				{name: _('Latest Updates'), id: 'latestupdates', type: 'action', iosapp: false},
+ 				{name: _('Send Feedback'), id: 'feedback', type: 'action', mobileapp: false},
+ 				{type: 'separator'},
+@@ -1149,8 +1143,6 @@ class Menubar extends window.L.Control {
+ 				{type: 'separator', iosapp: false},
+ 				{name: _('Keyboard shortcuts'), id: 'keyboard-shortcuts', type: 'action', iosapp: false},
+ 				{type: 'separator'},
+-				{name: _('Forum'), id: 'forum', type: 'action'},
+-				{name: _('Report an issue'), id: 'report-an-issue', type: 'action', iosapp: false},
+ 				{name: _('Latest Updates'), id: 'latestupdates', type: 'action', iosapp: false},
+ 				{name: _('Send Feedback'), id: 'feedback', type: 'action', mobileapp: false},
+ 				{type: 'separator'},
+@@ -2747,10 +2739,6 @@ class Menubar extends window.L.Control {
+ 			else this._map.welcome.showWelcomeDialog();
+ 		} else if (id === 'feedback' && this._map.feedback) {
+ 			this._map.feedback.showFeedbackDialog();
+-		} else if (id === 'report-an-issue') {
+-			window.open('https://github.com/CollaboraOnline/online/issues', '_blank', 'noopener');
+-		} else if (id === 'forum') {
+-			window.open('https://forum.collaboraonline.com', '_blank', 'noopener');
+ 		} else if (id === 'inserthyperlink') {
+ 			app.dispatcher.dispatch('hyperlinkdialog');
+ 		} else if (id === 'keyboard-shortcuts' || id === 'online-help') {
+diff --git a/browser/src/control/Control.NotebookbarWriter.js b/browser/src/control/Control.NotebookbarWriter.js
+index 5a14f1f2c..761c99b40 100644
+--- a/browser/src/control/Control.NotebookbarWriter.js
++++ b/browser/src/control/Control.NotebookbarWriter.js
+@@ -509,31 +509,6 @@ window.L.Control.NotebookbarWriter = window.L.Control.Notebookbar.extend({
+ 						}
+ 					]
+ 				},
+-				{ type: 'separator', id: 'help-forum-break', orientation: 'vertical' },
+-				{
+-					'type': 'toolbox',
+-					'children': [
+-						{
+-							'id': 'forum',
+-							'type': 'bigtoolitem',
+-							'text': _('Forum'),
+-							'command': '.uno:ForumHelp',
+-							'accessibility': { focusBack: true, combination: 'C', de: null }
+-						}
+-					]
+-				},
+-				{
+-					'type': 'toolbox',
+-					'children': [
+-						{
+-							'id': 'report-an-issue',
+-							'type': 'bigtoolitem',
+-							'text': _('Report an issue'),
+-							'command': '.uno:ReportIssue',
+-							'accessibility': { focusBack: true, combination: 'K', de: null }
+-						},
+-					]
+-				},
+ 				hasLatestUpdates ?
+ 					{
+ 						'type': 'toolbox',
+diff --git a/browser/src/errormessages.ts b/browser/src/errormessages.ts
+index 90627f4f5..a6adc3c2e 100644
+--- a/browser/src/errormessages.ts
++++ b/browser/src/errormessages.ts
+@@ -59,7 +59,7 @@ const errorMessages: ErrorMessages = {
+ 		'Your {productname} cluster appear to be mis-configured or scaling rapidly - please contact your system administrator. Continuing with editing may result in multiple users not seeing each other, conflicts in the document storage and/or copy/paste problems. Expected serverId {0} for routeToken {1} but connected to serverId {2}',
+ 	),
+ 	websocketproxyfailure: _(
+-		'Failed to establish socket connection or socket connection closed unexpectedly. The reverse proxy might be misconfigured, please contact the administrator. For more info on proxy configuration please checkout https://sdk.collaboraonline.com/docs/installation/Proxy_settings.html',
++		'Failed to establish socket connection or socket connection closed unexpectedly. The reverse proxy might be misconfigured, please contact the administrator.',
+ 	),
+ 	websocketgenericfailure: _(
+ 		'Failed to establish socket connection or socket connection closed unexpectedly.',

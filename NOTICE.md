@@ -1,8 +1,10 @@
 # Source notice
 
-Orlan Editor is Collabora Online, built from its source code without changes to that code.
-Only the product name, the link and the logo differ (see `build.sh`, `start-orlan-editor.sh`
-and `branding/`).
+Orlan Editor is Collabora Online, built from its source code. The product name, the link and
+the logo differ (see `build.sh`, `start-orlan-editor.sh` and `branding/`). One small patch
+changes the browser code (`patches/orlan-help-and-about.patch`): the About box names Collabora
+Online as the source and keeps its copyright notices, and the editor has no links to Collabora
+sites.
 
 - Collabora Online is licensed under the Mozilla Public License 2.0. The full licence text is in
   [LICENSE](LICENSE). Copyright the Collabora Online contributors.
